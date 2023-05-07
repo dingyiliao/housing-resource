@@ -1,0 +1,28 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+<style rel="stylesheet">
+
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container-md">
+    {% if result %}
+
+    {% for item in result %}
+    <div class="col-md" style="margin-left: 40px;">
+            <div class="card">
+                <a href={{item['url']}} target="_blank"><img src={{item['img']}} class="card-img-top" alt="..."></a>
+                <div class="card-body">
+                    <h5 class="card-title">￥ {{item['price']}} / 晚</h5>
+                    <p class="card-text">{{item['title']}}</p>
+                    <a href={{item['url']}} target="_blank" class="btn btn-primary">Take a look</a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+    {% endif %}
+</div>
+{% endblock %}

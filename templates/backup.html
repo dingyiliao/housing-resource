@@ -1,0 +1,212 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+<style>
+    #main {
+        padding-top: 9%;
+        width: 91%;
+        margin-left: auto;
+        margin-right: auto;
+        height: 100%;
+    }
+
+    div.col-lg.custom {
+        height: 100%;
+    }
+
+    .button button, table, #area, th label {
+        width: 100%;
+    }
+
+    #value, th {
+        color: #e1e4e9;
+    }
+
+    #area {
+        height: auto;
+        margin-top: 30px;
+        margin-bottom: 20px;
+    }
+
+    #value {
+        text-align: center;
+    }
+
+    th {
+        text-align: left;
+        width: 33.33%;
+        font-weight: normal;
+        /*color: #f4a6b8; //BLACKPINK WEBSITE'S FONT COLOR */
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row" id="main">
+        <div class="col-lg custom">
+            <div id="form">
+                <div class="form-row align-items-center">
+                    <div class="row-cols-lg-1" id="area">
+                        <div class="col-auto my-3">
+                            <label class="mr-sm-2 sr-only" for="inlineFormCustomSelect1"></label>
+                            <select class="custom-select mr-sm-2" onchange="check()" id="inlineFormCustomSelect1">
+                                <option selected>Choose city</option>
+                                <option value="shanghai">Shanghai</option>
+                            </select>
+                        </div>
+                        <div class="col-auto my-3">
+                            <label class="mr-sm-2 sr-only" for="inlineFormCustomSelect2"></label>
+                            <select class="custom-select mr-sm-2" id="inlineFormCustomSelect2">
+                                <option selected>Please choose a city</option>
+                            </select>
+                        </div>
+                        <div class="col-auto my-3">
+                            <label class="mr-sm-2 custom-range" for="formControlRange" id="value"></label>
+                            <input type="range" oninput="change()" class="form-control-range" id="formControlRange"
+                                   max="700" min="100"
+                                   step="100" value="100">
+                        </div>
+                        <div class="col-auto my-0">
+                            <table>
+                                <tr>
+                                    <th><label class="mr-sm-2" for="dateBegin" id="date1">Begin date</label></th>
+                                    <th><label class="sr-only"></label></th>
+                                    <th><label class="mr-sm-2" for="dateEnd" id="date2">End date</label></th>
+                                </tr>
+                                <tr>
+                                    <td><input type="date" oninput="setChange()" id="dateBegin"></td>
+                                    <td></td>
+                                    <td id="ed"><input type="date" id="dateEnd"></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-auto my-3 button">
+                            <button type="submit" id="btn" onclick="submit()" class="btn btn-lg btn-info">Submit
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    function change() {
+                        var value = document.getElementById('formControlRange').value;
+                        if (value != 700)
+                            document.getElementById('value').innerHTML = 'Max price: ' + value;
+                        else
+                            document.getElementById('value').innerHTML = 'Unlimited';
+                    }
+
+                    function check() {
+                        var sel_city = document.getElementById('inlineFormCustomSelect1');
+                        var sel_district = document.getElementById('inlineFormCustomSelect2');
+                        if (sel_city.options[sel_city.selectedIndex].value === 'shanghai') {
+                            var district = ['不限', '宝山区', '长宁区', '崇明区', '奉贤区', '虹口区', '黄浦区', '嘉定区',
+                                '静安区', '金山区', '闵行区', '浦东新区', '普陀区', '青浦区', '松江区', '徐汇区', '杨浦区'];
+                            var district_v = ['unlimited', 'baoshan', 'changning', 'chongming', 'fengxian', 'hongkou', 'huangpu',
+                                'jiading', 'jingan', 'jinshan', 'minhang', 'pudong', 'putuo', 'qingpu', 'songjiang', 'xuhui',
+                                'yangpu'];
+                            sel_district.options.remove(0);
+                            for (var i = 0; i < district.length; i++) {
+                                sel_district.add(new Option(district[i], district_v[i]));
+                            }
+                        } else {
+                            sel_district.options.length = 0;
+                            sel_district.add(new Option('Please choose a city', ''))
+                        }
+                    }
+
+                    function submit() {
+                        var city = $('#inlineFormCustomSelect1');
+                        var district = $('#inlineFormCustomSelect2');
+                        var max_price = $('#formControlRange');
+                        var date_begin = $('#dateBegin');
+                        var date_end = $('#dateEnd');
+
+                        if (city.val() !== 'Choose city' && district.val() !== 'Please choose a city' && date_begin.val() && date_end.val()) {
+                            var btn = $('#btn');
+                            if (btn.hasClass('disabled')) {
+                                alert('Please wait for minute.');
+                                return 1;
+                            } else {
+                                btn.addClass('disabled');
+                                $.ajax({
+                                    data: {
+                                        area: city.val(),
+                                        location: district.val(),
+                                        maxPrice: max_price.val(),
+                                        dateBegin: date_begin.val(),
+                                        dateEnd: date_end.val()
+                                    },
+                                    type: 'get',
+                                    dataType: 'json',
+                                    url: './submit',
+                                    complete: function () {
+                                        btn.removeClass('disabled');
+                                    },
+                                    success: function (msg, code, _) {
+                                        if (code == 'success')
+                                            window.open(window.location.href + '/result/' + msg.key);
+                                    },
+                                    error: function (_) {
+
+                                    }
+                                });
+                            }
+                        } else
+                            window.alert('Please complete your information.');
+                    }
+
+                    function __change() {
+                        var selected_date = $('#dateBegin');
+                        var new_date = new Date(selected_date.val());
+                        var month = new_date.getMonth() + 1;
+                        var strDate = new_date.getDate() + 1;
+                        if (month >= 1 && month <= 9)
+                            month = '0' + month;
+                        if (strDate >= 0 && strDate <= 9)
+                            strDate = "0" + strDate;
+                        return new_date.getFullYear() + '-' + month + '-' + strDate;
+                    }
+
+                    function setChange() {
+                        var tomorrow = __change();
+                        var el = document.getElementById('dateEnd');
+                        el.setAttribute('min', tomorrow);
+                        $('#dateEnd').val(tomorrow);
+
+
+                        if (document.getElementById('ed').hasAttribute('style'))
+                            document.getElementById('ed').removeAttribute('style');
+                    }
+
+                    jQuery(function () {
+                        var begin_date = document.getElementById('dateBegin');
+                        var today = (function () {
+                            var date = new Date();
+                            var month = date.getMonth() + 1;
+                            var strDate = date.getDate();
+                            if (month >= 1 && month <= 9)
+                                month = '0' + month;
+                            if (strDate >= 0 && strDate <= 9) {
+                                strDate = "0" + strDate;
+                            }
+                            return date.getFullYear() + '-' + month + '-' + strDate
+                        })();
+                        begin_date.setAttribute('min', today);
+                        change();
+                    });
+                </script>
+            </div>
+        </div>
+        <div class="col-lg custom">
+            <div class="jumbotron">
+                <h1 class="display-5" style="text-align: center">Welcome to Searching</h1>
+                <p class="lead">This is a simple website, in where you can search you're satisfied houses. You just need
+                    to enter your filter.</p>
+                <hr class="my-4">
+                <p>We get these data from Meituan, tuniu, airbnb and other websites.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

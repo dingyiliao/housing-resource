@@ -1,0 +1,116 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+<link href="../static/layui/css/layui.css" rel="stylesheet">
+<style>
+    #main {
+        padding-top: 9%;
+        width: 91%;
+        margin-left: auto;
+        margin-right: auto;
+        height: 100%;
+    }
+
+    div.col-lg.custom {
+        height: 120%;
+        width: 120px;
+    }
+
+    .button button, table, #area, th label {
+        width: 100%;
+    }
+
+    #value, th {
+        color: #e1e4e9;
+    }
+
+    #area {
+        height: auto;
+        margin-top: 30px;
+        margin-bottom: 20px;
+    }
+
+    #value {
+        text-align: center;
+    }
+
+    .jumbotron {
+        margin-top: 29px;
+    }
+
+    th {
+        text-align: left;
+        width: 33.33%;
+        font-weight: normal;
+        /*color: #f4a6b8; //BLACKPINK WEBSITE'S FONT COLOR */
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<script src="../static/cityChoose.js"></script>
+<script src="../static/layui/layui.js"></script>
+<script>
+    layui.use(['layer',], function () {
+        let layer = layui.layer;
+    })
+</script>
+<div class="container">
+    <div class="row" id="main">
+        <div class="col-lg custom">
+            <div id="form">
+                <div class="form-row align-items-center">
+                    <div class="row-cols-lg-1" id="area">
+                        <div class="col-auto my-3">
+                            <label class="mr-sm-2 sr-only" for="inlineFormCustomSelect1"></label>
+                            <select class="custom-select mr-sm-2" onchange="cityChangeHandler()"
+                                    id="inlineFormCustomSelect1">
+                                <option selected value="none">Choose city</option>
+                            </select>
+                        </div>
+                        <div class="col-auto my-3">
+                            <label class="mr-sm-2 sr-only" for="inlineFormCustomSelect2"></label>
+                            <select class="custom-select mr-sm-2" id="inlineFormCustomSelect2">
+                                <option selected value="none">Please choose a city</option>
+                            </select>
+                        </div>
+                        <div class="col-auto my-3">
+                            <label class="mr-sm-2 custom-range" for="formControlRange" id="value">Max price: 100</label>
+                            <input type="range" oninput="priceChangeHandler()" class="form-control-range"
+                                   id="formControlRange"
+                                   max="700" min="100"
+                                   step="100" value="100">
+                        </div>
+                        <div class="col-auto my-0">
+                            <table>
+                                <tr>
+                                    <th><label class="mr-sm-2" for="dateBegin" id="date1">Begin date</label></th>
+                                    <th><label class="sr-only"></label></th>
+                                    <th><label class="mr-sm-2" for="dateEnd" id="date2">End date</label></th>
+                                </tr>
+                                <tr>
+                                    <td><input type="date" oninput="dateChangeHandler()" id="dateBegin"></td>
+                                    <td></td>
+                                    <td id="ed"><input type="date" id="dateEnd"></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-auto my-3 button">
+                            <button type="submit" id="btn" onclick="submitHandler()" class="btn btn-lg btn-info">Submit
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg custom">
+            <div class="jumbotron">
+                <h1 class="display-5" style="text-align: center">Welcome to Searching</h1>
+                <p class="lead">This is a simple website, where you can search the houses with which you're satisfied. All you need to do just enter your filters.</p>
+                <hr class="my-4">
+                <p>We get these data from Meituan, tuniu, airbnb and other websites.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

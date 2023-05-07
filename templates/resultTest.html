@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<div class="container-md">
+    {% if result %}
+
+    <div class="col-md-1">
+        {% for item in result %}
+        <div class="card" style="width: 500px;">
+            <a href={{item['url']}} target="_blank"><img src={{item['img']}} style="height: 260px; width: 100%;"
+                                                         class="card-img-top" alt="..."></a>
+            <div class="card-body">
+                <h5 class="card-title">гд {{item['price']}} / ═э</h5>
+                <p class="card-text">{{item['title']}}</p>
+                <a href={{item['url']}} target="_blank" class="btn btn-primary">Take a look</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% endif %}
+</div>
+{% endblock %}
